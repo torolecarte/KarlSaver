@@ -33,7 +33,7 @@ namespace KarlSaver
         {
             InitializeComponent();
 
-            if(!File.Exists("steamPath"))
+            if (!File.Exists("steamPath"))
             {
                 try
                 {
@@ -80,12 +80,15 @@ namespace KarlSaver
             string file = splitPath[splitPath.Length - 1];
             Console.WriteLine("file: " + file);
 
-            File.Copy(filePath, "backup\\" +"["+ unixTimeStamp +"] "+ file);
+            var fileName = System.IO.Path.GetFileName(filePath);
+            var backupPath = System.IO.Path.Combine(AppContext.BaseDirectory, "backup", $"[{unixTimeStamp}]{fileName}");
+            File.Copy(filePath, backupPath);
         }
 
         string FindSteamPath()
         {
-            string _steamPath = @"C:\Program Files (x86)\Steam\steamapps\common\Deep Rock Galactic\FSD\Saved\SaveGames\";
+            //string _steamPath = @"D:\SteamLibrary\steamapps\common\Deep Rock Galactic\FSD\Saved\SaveGames\";
+            string _steamPath = SteamSaveManager.GetDeepRockSaveFolderPath();
             string[] steamSaveFolderFiles = Directory.GetFiles(_steamPath);
 
             foreach (var file in steamSaveFolderFiles)
@@ -94,7 +97,7 @@ namespace KarlSaver
 
                 if (splitString[splitString.Length - 1] == "Player.sav")
                 {
-                    return  file;
+                    return file;
                 }
             }
 
@@ -106,9 +109,9 @@ namespace KarlSaver
             string _win10Path = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Packages\";
             string[] win10Games = Directory.GetDirectories(_win10Path);
 
-            foreach(var filePath in win10Games)
+            foreach (var filePath in win10Games)
             {
-                if(filePath.Contains("CoffeeStainStudios.DeepRockGalactic"))
+                if (filePath.Contains("CoffeeStainStudios.DeepRockGalactic"))
                 {
                     _win10Path = filePath + @"\SystemAppData\wgs\";
                     _win10Path = getLongestFolderDir(_win10Path) + @"\";
@@ -130,7 +133,7 @@ namespace KarlSaver
             return Directory.GetDirectories(path).OrderByDescending(s => s.Length).First();
         }
 
-
+        // Eventr Handlers.
         private void btnOpenFileSteam_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -151,11 +154,68 @@ namespace KarlSaver
                 File.WriteAllText("win10Path", win10Path);
             }
         }
+        private void btnSteamAutoPath_Click(object sender, RoutedEventArgs e)
+        {
+            string autoPath;
 
+            try
+            {
+                autoPath = FindSteamPath();
+            }
+            catch
+            {
+                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (autoPath != null)
+            {
+                steamPath = autoPath;
+                steamPathText.Text = steamPath;
+                File.WriteAllText("steamPath", steamPath);
+                MessageBox.Show("Successfully got Steam save file location", "Find Find Success", MessageBoxButton.OK);
+            }
+            else
+            {
+                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void btnXboxAutoPath_Click(object sender, RoutedEventArgs e)
+        {
+            string autoPath;
+
+            try
+            {
+                autoPath = FindWin10Path();
+            }
+            catch
+            {
+                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (autoPath != null)
+            {
+                win10Path = autoPath;
+                win10PathText.Text = win10Path;
+                File.WriteAllText("win10Path", win10Path);
+                MessageBox.Show("Successfully got Xbox/Win10 save file location", "Find Find Success", MessageBoxButton.OK);
+            }
+            else
+            {
+                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void helpButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(win10PathTemplate + "/n" + steamPathTemplate);
+        }
+
+        // Private Methods.
         private void SteamToXboxClick(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure you want to copy your Steam save to Xbox/Win10?", "Steam To Xbox/Win10", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch(result)
+            switch (result)
             {
                 case MessageBoxResult.Yes:
                     break;
@@ -187,7 +247,7 @@ namespace KarlSaver
 
                 File.Copy(steamPath, newPath, true);
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 MessageBox.Show("Error in savegame conversion\n" + error, "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -196,7 +256,6 @@ namespace KarlSaver
             PlaySound();
             MessageBox.Show("Savegame successfully converted!", "Conversion Success", MessageBoxButton.OK);
         }
-
         private void XboxToSteamClick(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure you want to copy your Xbox/Win10 save to Steam?", "Xbox/Win10 To Steam", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -208,7 +267,7 @@ namespace KarlSaver
                     return;
             }
 
-            if(!File.Exists(win10Path))
+            if (!File.Exists(win10Path))
             {
                 try
                 {
@@ -218,11 +277,11 @@ namespace KarlSaver
                 }
                 catch
                 {
-                    MessageBox.Show("Error, specified file does not exist and cannot find correct path\n", "File Path Error" , MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Error, specified file does not exist and cannot find correct path\n", "File Path Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
-            if(!File.Exists(steamPath))
+            if (!File.Exists(steamPath))
             {
                 try
                 {
@@ -244,7 +303,7 @@ namespace KarlSaver
             }
             catch (Exception error)
             {
-                MessageBox.Show("Error, Unable to Backup Save files. Cancelling Conversion\n" + error, "Backup Error" , MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error, Unable to Backup Save files. Cancelling Conversion\n" + error, "Backup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -269,71 +328,12 @@ namespace KarlSaver
             PlaySound();
         }
 
-        private void btnSteamAutoPath_Click(object sender, RoutedEventArgs e)
-        {
-            string autoPath;
-
-            try
-            {
-                autoPath = FindSteamPath();
-            }
-            catch
-            {
-                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (autoPath != null)
-            {
-                steamPath = autoPath;
-                steamPathText.Text = steamPath;
-                File.WriteAllText("steamPath", steamPath);
-                MessageBox.Show("Successfully got Steam save file location", "Find Find Success", MessageBoxButton.OK);
-            }
-            else
-            {
-                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void btnXboxAutoPath_Click(object sender, RoutedEventArgs e)
-        {
-            string autoPath;
-
-            try
-            {
-                autoPath = FindWin10Path();
-            }
-            catch
-            {
-                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (autoPath != null)
-            {
-                win10Path = autoPath;
-                win10PathText.Text = win10Path;
-                File.WriteAllText("win10Path", win10Path);
-                MessageBox.Show("Successfully got Xbox/Win10 save file location", "Find Find Success", MessageBoxButton.OK);
-            }
-            else
-            {
-                MessageBox.Show("Unable to find save file automatically, please enter the path manually", "File Find Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         void PlaySound()
         {
             MediaPlayer mediaplayer = new MediaPlayer();
             mediaplayer.Open(new Uri(@"C:\Users\Dylan\source\repos\KarlSaver\KarlSaver\bin\Debug\rock_and_stone.wav"));
             mediaplayer.Volume = 0.2;
             mediaplayer.Play();
-        }
-        
-        private void helpButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(win10PathTemplate + "/n" + steamPathTemplate);
         }
     }
 }
