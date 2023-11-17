@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace KarlSaver.Tests
 {
-    public class Tests
+    public class SteamSaveManagerTests
     {
         [SetUp]
         public void Setup()
@@ -21,17 +21,17 @@ namespace KarlSaver.Tests
         [Test]
         public void GetSteamSavePath_Success()
         {
-            var response = SteamSaveManager.GetSteamSavePath();
+            var response = SteamSaveManager.GetSaveFolderPath();
 
             Assert.IsNotNull(response);
             Assert.IsNotEmpty(response);
         }
 
         [Test]
-        public void GetDeepRockLibraryFolderPath_Success()
+        public void GetSaveFilePath_Success()
         {
             var steamPath = SteamSaveManager.GetSteamPath();
-            var response = SteamSaveManager.GetDeepRockSaveFolderPath(steamPath);
+            var response = SteamSaveManager.GetSaveFilePath(steamPath);
 
             Assert.IsNotNull(response);
             Assert.IsNotEmpty(response);
