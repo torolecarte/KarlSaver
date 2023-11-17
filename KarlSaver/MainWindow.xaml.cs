@@ -87,41 +87,18 @@ namespace KarlSaver
 
         string FindSteamPath()
         {
-            //string _steamPath = @"D:\SteamLibrary\steamapps\common\Deep Rock Galactic\FSD\Saved\SaveGames\";
-            string _steamPath = SteamSaveManager.GetDeepRockSaveFolderPath();
-            string[] steamSaveFolderFiles = Directory.GetFiles(_steamPath);
+            string _steamPath = SteamSaveManager.GetSaveFolderPath();
+            var saveFilePath = SteamSaveManager.GetSaveFilePath(_steamPath);
 
-            foreach (var file in steamSaveFolderFiles)
-            {
-                string[] splitString = file.Split('_');
-
-                if (splitString[splitString.Length - 1] == "Player.sav")
-                {
-                    return file;
-                }
-            }
-
-            return null;
+            return saveFilePath;
         }
 
         string FindWin10Path()
         {
-            string _win10Path = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Packages\";
-            string[] win10Games = Directory.GetDirectories(_win10Path);
+            var saveFolderPath = XboxSaveManager.GetSaveFolderPath();
+            var _win10Path = XboxSaveManager.GetSaveFilePath(saveFolderPath);
 
-            foreach (var filePath in win10Games)
-            {
-                if (filePath.Contains("CoffeeStainStudios.DeepRockGalactic"))
-                {
-                    _win10Path = filePath + @"\SystemAppData\wgs\";
-                    _win10Path = getLongestFolderDir(_win10Path) + @"\";
-                    _win10Path = getLongestFolderDir(_win10Path) + @"\";
-                    _win10Path = getLongestFile(_win10Path);
-                    return _win10Path;
-                }
-            }
-
-            return null;
+            return _win10Path;
         }
 
         string getLongestFile(string path)
@@ -130,6 +107,8 @@ namespace KarlSaver
         }
         string getLongestFolderDir(string path)
         {
+            var folders = Directory.GetDirectories(path).OrderByDescending(s => s.Length);
+
             return Directory.GetDirectories(path).OrderByDescending(s => s.Length).First();
         }
 

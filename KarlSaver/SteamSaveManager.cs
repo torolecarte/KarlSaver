@@ -44,17 +44,9 @@ namespace KarlSaver
             return steamPath;
         }
 
-        public static string GetSteamSavePath()
+        public static string GetSaveFolderPath()
         {
-            string steamPath = GetSteamPath();
-            string savePath = steamPath + @"\userdata";
-            return savePath;
-        }
-
-        public static string GetDeepRockSaveFolderPath(string steamInstallPath = null)
-        {
-            if (String.IsNullOrEmpty(steamInstallPath))
-                steamInstallPath = GetSteamPath();
+            var steamInstallPath = GetSteamPath();
 
             var libraryVdfPath = Path.Combine(steamInstallPath, "steamapps", "libraryfolders.vdf");
             var vdfFileContent = File.ReadAllText(libraryVdfPath);
@@ -72,7 +64,23 @@ namespace KarlSaver
                     if (Directory.Exists(fullPath))
                         return fullPath;
                 }
+            }
 
+            return null;
+        }
+
+        public static string GetSaveFilePath(string saveFolderPath)
+        {
+            string[] steamSaveFolderFiles = Directory.GetFiles(saveFolderPath);
+
+            foreach (var file in steamSaveFolderFiles)
+            {
+                string[] splitString = file.Split('_');
+
+                if (splitString[splitString.Length - 1] == "Player.sav")
+                {
+                    return file;
+                }
             }
 
             return null;
