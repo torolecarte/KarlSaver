@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarlSaver", "KarlSaver\KarlSaver.csproj", "{B573D56B-8875-47AC-99D3-A07E5D8007C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarlSaver.Tests", "KarlSaver.Tests\KarlSaver.Tests.csproj", "{D9FAA0F1-646A-462A-9411-2E99239031F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarlSaver.MAUI", "KarlSaver.MAUI\KarlSaver.MAUI.csproj", "{BA54CCF5-6974-4407-8479-E62453A703B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,16 @@ Global
 		{B573D56B-8875-47AC-99D3-A07E5D8007C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B573D56B-8875-47AC-99D3-A07E5D8007C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B573D56B-8875-47AC-99D3-A07E5D8007C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9FAA0F1-646A-462A-9411-2E99239031F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9FAA0F1-646A-462A-9411-2E99239031F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9FAA0F1-646A-462A-9411-2E99239031F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9FAA0F1-646A-462A-9411-2E99239031F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA54CCF5-6974-4407-8479-E62453A703B3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
